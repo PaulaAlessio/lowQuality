@@ -49,9 +49,6 @@ int main(int argc, char *argv[]){
    start = clock();
    time_t rawtime;
    struct tm * timeinfo;
-   time ( &rawtime );
-   timeinfo = localtime ( &rawtime );
-   fprintf(stderr ,"Starting program at: %s", asctime (timeinfo) );
 
    if (argc != 11 && argc != 9) {
       printHelpDialog();
@@ -91,10 +88,13 @@ int main(int argc, char *argv[]){
       minQ = 27;
       fprintf(stderr, "Default min quality: %d\n", minQ);
    }
+   time ( &rawtime );
+   timeinfo = localtime ( &rawtime );
+   fprintf(stderr ,"Starting program at: %s", asctime (timeinfo) );
    // Opening file
    f = fopen_gen(inputfile,"r");
-
-   init_info(res, read_len, ntiles, minQ); 
+    
+   init_info(res, read_len, ntiles, minQ,NQ); 
    while ( (newlen = fread(buffer+offset,1,B_LEN-offset,f) ) > 0 ){
 
       newlen += offset+1;
@@ -122,7 +122,12 @@ int main(int argc, char *argv[]){
      c1 = 0;
    }
    // Closing file
+   fprintf(stderr, "- Finished reading file.\n");
    fclose(f);
+   
+   // resize Info
+   resize_info(res);
+
    
    // Open file and write to disk (binary)
    fprintf(stderr, "- Writing data structure to file %s.\n",outputfile);
@@ -136,12 +141,12 @@ int main(int argc, char *argv[]){
    
    
    // Read struct from disk (binary)
-   res  = malloc(sizeof *res);
-   fprintf(stderr, "- Read data structure from file %s.\n",outputfile);
-   read_info(res,outputfile);
-   printf("\nPRINTING res from file: \n");
-   print_info(res);
-
+//   res  = malloc(sizeof *res);
+//   fprintf(stderr, "- Read data structure from file %s.\n",outputfile);
+//   read_info(res,outputfile);
+//   printf("\nPRINTING res from file: \n");
+//   print_info(res);
+//
 
    // Obtaining elapsed time
    end = clock();

@@ -1,13 +1,13 @@
+/** Uncompress input files using pipes.
+ * Hook the standard file opening functions, open, fopen and fopen64.
+ * If the extension of the file being opened indicates the file is
+ * compressed (.gz, .bz2, .xz), open a pipe to a program that
+ * decompresses that file (gunzip, bunzip2 or xzdec) and return a
+ * handle to the open pipe.
+ * @author Shaun Jackman <sjackman@bcgsc.ca>
+ */
+
 #include "fopen_gen.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <assert.h>
-#include <sys/types.h>
-#include <fcntl.h> 
-
 
 static const char* zcatExec(const char* path)
 {
@@ -29,7 +29,6 @@ static const char* zcatExec(const char* path)
                        (! strcmp(path + strl - 4, ".sra")) ? "fastq-dump -Z --split-spot" :
                        (! strcmp(path + strl - 4, ".url")) ? "wget -O- -i" : NULL;
 }
-//
 
 /** Open a pipe to uncompress the specified file.
  * Not thread safe.

@@ -1,8 +1,7 @@
-// utils.h  
-/* Contains useful functions 
+/* Contains usefu 
  * */
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef STATS_INFO_H
+#define STATS_INFO_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,11 +10,16 @@
 #define ZEROQ 33
 #define NQ 41
 #define N_ACGT 5
-#define FIRSTTILE 1101
 
 
 // Struct that stores output
 typedef struct statsinfo{
+   // GOAL: REMOVE FIRST_TILE, CUR_TILE OLD_TILE
+   int read_len, ntiles, nQ, minQ, tile_pos;
+   // Names of the existing tiles
+   int *tile_tags; 
+   // Names of the existing qualities
+   int *qual_tags;
    // Number of low Quality A,C,G,T,N per tile
    long int* lowQ_ACGT_tile; // DIM: N_ACGT * ntiles
    // Number of A,C,G,T,N per tile.  
@@ -25,13 +29,13 @@ typedef struct statsinfo{
    long int* reads_MlowQ;    // DIM: read_len + 1  
    // Number of bases of a given quality per tile.
    long int* QPosTile_table; // DIM: ntiles * NQ * read_len
-   int read_len, ntiles, cur_tile, old_tile, first_tile, minQ; 
+   
 } Info;
 
 
 
 void init_info(Info* res, const int read_len, const int ntiles, 
-     int minQ);
+     const int minQ, const int nQ);
 void free_info(Info* res);
 void read_info(Info* res, char* file);
 void write_info(Info* res, char* file);
@@ -48,6 +52,7 @@ void update_ACGT_counts(long int* ACGT_low,  char ACGT);
 void update_Qpos_table(long int* Qpos_table, char* line4, const int Ncol);
 void update_Qtile_table(long int* Qtile_table, char* line4, const int read_len,int tile_cc);
 
+void resize_info(Info* res);
 
 
 #endif
