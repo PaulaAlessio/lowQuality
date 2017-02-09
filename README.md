@@ -65,8 +65,8 @@ Depends on: `rmarkdown`, `pheatmap` R packages.
 ``` 
     bin/lowQuality -i examples/test.fq.bz2 -l 51 -o example/my_output.bin
     R -e "rmarkdown::render('R/quality_report.Rmd',
-                 params=list(inputfile='examples/my_output.bin'),
-                 output_file='examples/my_test_quality.html')"
+                 params=list(inputfile='../examples/my_output.bin'),
+                 output_file='../examples/my_test_quality.html')"
 ```
 
   
