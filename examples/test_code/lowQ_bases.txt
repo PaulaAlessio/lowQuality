@@ -1,0 +1,17 @@
+TILE 1
+NAA
+#//
+N
+#
+TCAAG
+/////
+N
+#
+N
+#
+
+TILE 2
+NA
+#/
+N
+#

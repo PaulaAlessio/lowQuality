@@ -1,0 +1,10 @@
+Starting program at: Thu Feb  9 20:50:22 2017
+- Input file: test_10seq.fq
+- Read length: 51
+- Number of tiles: 96
+- Min quality: 27
+- Output file: test_10seq.bin
+- Finished reading file.
+- Writing data structure to file test_10seq.bin.
+Finishing program at: Thu Feb  9 20:50:22 2017
+Time elapsed: 0.000661 s.

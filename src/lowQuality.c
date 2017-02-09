@@ -1,100 +1,54 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <getopt.h>
 #include <time.h>
+#include "init.h"
 #include "fopen_gen.h"
 #include "sequence.h"
 #include "stats_info.h"
 
 #define B_LEN 131072
-
-
-void printHelpDialog()
-{
-   const char dialog[] =
-     "Usage: lowQuality -i [INPUT_FILE.fq] -l [READ_LENGTH] -t [NUMBER_OF_TILES] -o [OUTPUT_FILE] \n"
-     "Reads in a fq file (gz, bz2, z formats also accepted) and performs a set of \n"
-     "quality tests. \n"
-     "Output is in binary format, (write the reader!).\n"
-      " -h prints help dialog.\n"
-      " -i Input file [*fq|*fq.gz|*fq.bz2]. Required option.\n"
-      " -l Read length. Length of the reads. Required option.\n"
-      " -t Number of tiles. Required option. \n"
-      " -q Minimum quality allowed. Optional option. Default = 27 .\n"
-      " -o Output file. required option.\n";
-   fprintf(stderr, "%s", dialog );
-   exit(EXIT_SUCCESS);
-}
-
-
-
-
+#define NTILES 96 // default value 
+#define MINQ 27   // default value
 
 int main(int argc, char *argv[]){
    FILE* f;
-   char  *inputfile = NULL, *outputfile=NULL;
    int j = 0, k = 0, c1 = 0, c2 = -1;  
-   int nreads = 0 ; 
    char buffer[B_LEN + 1];
    int newlen;
    int offset = 0; 
    Info* res= malloc(sizeof *res); 
    Read* read = malloc(sizeof *read);
-   int minQ = 0 ; 
+   char  *inputfile = NULL, *outputfile=NULL;
    int read_len = 0; 
-   int ntiles = 0;
-   char tmp;
+   int ntiles = NTILES; 
+   int minQ = MINQ ; 
    clock_t start, end;
    double cpu_time_used;
-   start = clock();
    time_t rawtime;
    struct tm * timeinfo;
 
-   if (argc != 11 && argc != 9) {
-      printHelpDialog();
-   }
-   while ( (tmp = getopt(argc,argv,"hi:l:t:q:o:")) != -1){
-      switch(tmp){
-         case 'h': //show the HelpDialog
-            printHelpDialog();
-            break;
-         case 'i':
-           inputfile = optarg;
-           fprintf(stderr, "- Input file: %s\n", optarg);
-           break; 
-         case 'l':
-           read_len = atoi(optarg);
-           fprintf(stderr, "- Read length: %d\n", read_len);
-           break;
-         case 't':
-           ntiles = atoi(optarg);
-           fprintf(stderr, "- Number of tiles: %d\n", ntiles);
-           break;
-         case 'q':
-           minQ = atoi(optarg);
-           fprintf(stderr, "- Min quality: %d\n", minQ);
-           break;
-         case 'o':
-           outputfile = optarg;
-           fprintf(stderr, "- Output file: %s\n", optarg);
-           break; 
-         default:
-            printHelpDialog();
-            break;
-      }         
-            
-   } 
-   if (minQ == 0 ) {
-      minQ = 27;
-      fprintf(stderr, "Default min quality: %d\n", minQ);
-   }
+   // Start the clock 
+   start = clock();
    time ( &rawtime );
    timeinfo = localtime ( &rawtime );
+  
+   // Get arguments  
+   get_arg(argc, argv, &inputfile, &read_len, 
+           &ntiles, &minQ, &outputfile);
    fprintf(stderr ,"Starting program at: %s", asctime (timeinfo) );
+   fprintf(stderr, "- Input file: %s\n", inputfile);
+   fprintf(stderr, "- Read length: %d\n", read_len);
+   fprintf(stderr, "- Number of tiles: %d\n", ntiles);
+   fprintf(stderr, "- Min quality: %d\n", minQ);
+   fprintf(stderr, "- Output file: %s\n", outputfile);
+    
    // Opening file
    f = fopen_gen(inputfile,"r");
-    
-   init_info(res, read_len, ntiles, minQ,NQ); 
+   
+   // Initialize struct that will contain the output
+   init_info(res, read_len, ntiles, minQ,NQ);
+
+   // Read the fastq file
    while ( (newlen = fread(buffer+offset,1,B_LEN-offset,f) ) > 0 ){
 
       newlen += offset+1;
@@ -106,11 +60,11 @@ int main(int argc, char *argv[]){
            c2 = j;
            get_read(read,buffer,c1,c2, k);
            if( (k % 4) == 3 ){
-              nreads++;
               
-              if (nreads == 1) get_first_tile(res,read);
-              if (nreads % 1000000 == 0) fprintf(stderr, "  %10d reads have been read.\n",nreads);
+              if (res -> nreads == 0) get_first_tile(res,read);
               update_info(res,read);
+              if (res -> nreads % 1000000 == 0) 
+                 fprintf(stderr, "  %10d reads have been read.\n",res -> nreads);
            } 
            k++;
          }
@@ -120,14 +74,14 @@ int main(int argc, char *argv[]){
        memcpy(buffer,buffer+c1,offset);
      c2 = -1;
      c1 = 0;
-   }
+   } // end while 
+
    // Closing file
    fprintf(stderr, "- Finished reading file.\n");
    fclose(f);
    
    // resize Info
    resize_info(res);
-
    
    // Open file and write to disk (binary)
    fprintf(stderr, "- Writing data structure to file %s.\n",outputfile);
@@ -155,7 +109,5 @@ int main(int argc, char *argv[]){
    timeinfo = localtime ( &rawtime );
    fprintf(stderr ,"Finishing program at: %s", asctime (timeinfo) );
    fprintf(stderr, "Time elapsed: %f s.\n",cpu_time_used);
-
-
-
+   return 1;
 }

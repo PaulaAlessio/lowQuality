@@ -15,7 +15,7 @@
 // Struct that stores output
 typedef struct statsinfo{
    // GOAL: REMOVE FIRST_TILE, CUR_TILE OLD_TILE
-   int read_len, ntiles, nQ, minQ, tile_pos;
+   int read_len, ntiles, nQ, minQ, tile_pos,nreads;
    // Names of the existing tiles
    int *tile_tags; 
    // Names of the existing qualities

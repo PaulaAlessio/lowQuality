@@ -54,6 +54,7 @@ void init_info(Info *res, const int read_len, const int ntiles, const int minQ, 
   res -> ntiles = ntiles;
   res -> tile_pos = 0;
   res -> minQ = minQ;
+  res -> nreads = 0;
 }
 
 void free_info(Info* res){
@@ -74,6 +75,7 @@ void read_info(Info *res, char *file){
    fread(&(res -> ntiles),sizeof(int),1,f);
    fread(&(res -> minQ),sizeof(int),1,f);
    fread(&(res -> nQ),sizeof(int),1,f);
+   fread(&(res -> nreads),sizeof(int),1,f);
    d1 = N_ACGT*(res -> ntiles);
    d2 = (res -> read_len) + 1;
    d3 = (res -> ntiles)*(res -> read_len)*(res -> nQ);
@@ -104,6 +106,7 @@ void write_info(Info *res, char *file){
    fwrite(&(res -> ntiles), sizeof(int),1,f);
    fwrite(&(res -> minQ), sizeof(int),1,f);
    fwrite(&(res -> nQ), sizeof(int),1,f);
+   fwrite(&(res -> nreads), sizeof(int),1,f);
    fwrite(res -> tile_tags, sizeof(int),res->ntiles,f);
    fwrite(res -> qual_tags, sizeof(int),res->nQ,f);
    fwrite(res -> lowQ_ACGT_tile, sizeof(long int),d1,f);
@@ -118,6 +121,7 @@ void print_info(Info* res){
    long int max = 0; 
    printf("- Read length: %d\n", res -> read_len);
    printf("- Number of tiles: %d\n", res -> ntiles);
+   printf("- Total number of reads: %d\n", res -> nreads);
    printf("- Number associated with the first tile: %d\n", res -> tile_tags[0]);
    printf("- Min Quality: %d\n", res -> minQ);
    printf("- Number of ACGT in the first tile: \n");
@@ -145,7 +149,7 @@ void print_info(Info* res){
       }
       printf("\n");
    }
-   printf("\n- Number of reads with M low quality nucleotides in tile 1: \n");
+   printf("\n- Number of reads with M low quality nucleotides: \n");
    for (i = 0; i < (res -> read_len +1); i++){
       printf("  M lowQ = %2d,  Nreads = %ld \n", i, res -> reads_MlowQ[i]);
       if (res -> reads_MlowQ[i] > max && i >0) max = res -> reads_MlowQ[i];
@@ -176,7 +180,6 @@ void update_info(Info* res, Read* read){
    int tile = get_tile(read -> line1);
    if( res->tile_tags[res -> tile_pos ] != tile){
       res -> tile_tags [++(res -> tile_pos)] = tile;
-      fprintf(stderr,"tilepos: %d\n",res->tile_pos);
    }  
    for (i = 0 ; i < res->read_len; i++){
       update_ACGT_counts(res->ACGT_tile+(res -> tile_pos)*N_ACGT ,read -> line2[i]);
@@ -187,6 +190,7 @@ void update_info(Info* res, Read* read){
    }
    update_Qtile_table(res -> QPosTile_table, read -> line4, res->read_len ,res -> tile_pos);
    res -> reads_MlowQ[lowQ]++;
+   res -> nreads++;
 }
 
 void update_ACGT_counts(long int* ACGT_low,  char ACGT){
@@ -251,7 +255,6 @@ void resize_info(Info* res){
                   j*(res -> read_len) + k ] !=0 && belongsto(j,res -> qual_tags,nQ)==0 ){
                res -> qual_tags[nQ] = j;
                nQ++;
-               fprintf(stderr, "nQ: %d\n",nQ); 
                break; 
             }
          }
