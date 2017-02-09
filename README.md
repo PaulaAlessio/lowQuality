@@ -12,7 +12,7 @@ html visualization of the data.
 
 ## Running the program
 
-Usage `C` executable: 
+Usage `C` executable (in folder `bin`): 
 
 ```
 lowQuality -i [INPUT_FILE.fq] -l [READ_LENGTH] -t [NUMBER_OF_TILES] -o [OUTPUT_FILE]` 
@@ -27,7 +27,7 @@ Output is in binary format, (write the reader!).
 *  `-o` Output file. required option.
 ```
 
-Usage `Rmd` script: 
+Usage `Rmd` script (in folder `R`): 
 
 ```
     R -e "rmarkdown::render('quality_report.Rmd',
@@ -64,7 +64,7 @@ Depends on: `rmarkdown`, `pheatmap` R packages.
 
 ``` 
     bin/lowQuality -i examples/test.fq.bz2 -l 51 -o example/my_output.bin
-    R -e "rmarkdown::render('bin/quality_report.Rmd',
+    R -e "rmarkdown::render('R/quality_report.Rmd',
                  params=list(inputfile='examples/my_output.bin'),
                  output_file='examples/my_test_quality.html')"
 ```
