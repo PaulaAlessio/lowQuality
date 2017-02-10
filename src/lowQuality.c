@@ -17,7 +17,7 @@ int main(int argc, char *argv[]){
    int newlen;
    int offset = 0; 
    Info* res= malloc(sizeof *res); 
-   Read* read = malloc(sizeof *read);
+   Sequence* seq = malloc(sizeof *seq);
    char  *inputfile = NULL, *outputfile=NULL;
    int read_len = 0; 
    int ntiles = NTILES; 
@@ -58,11 +58,11 @@ int main(int argc, char *argv[]){
          c1 = c2 + 1;
          if (buffer[j]== '\n'){
            c2 = j;
-           get_read(read,buffer,c1,c2, k);
+           get_sequence(seq,buffer,c1,c2, k);
            if( (k % 4) == 3 ){
               
-              if (res -> nreads == 0) get_first_tile(res,read);
-              update_info(res,read);
+              if (res -> nreads == 0) get_first_tile(res,seq);
+              update_info(res,seq);
               if (res -> nreads % 1000000 == 0) 
                  fprintf(stderr, "  %10d reads have been read.\n",res -> nreads);
            } 
@@ -95,11 +95,11 @@ int main(int argc, char *argv[]){
    
    
    // Read struct from disk (binary)
-//   res  = malloc(sizeof *res);
-//   fprintf(stderr, "- Read data structure from file %s.\n",outputfile);
-//   read_info(res,outputfile);
-//   printf("\nPRINTING res from file: \n");
-//   print_info(res);
+   res  = malloc(sizeof *res);
+   fprintf(stderr, "- Read data structure from file %s.\n",outputfile);
+   read_info(res,outputfile);
+   printf("\nPRINTING res from file: \n");
+   print_info(res);
 //
 
    // Obtaining elapsed time

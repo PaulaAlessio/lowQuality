@@ -46,10 +46,11 @@ Depends on: `rmarkdown`, `pheatmap` R packages.
    * `int` (4B) : number of reads (`nreads`),
    * `ntiles*int ` (4x`ntiles`B) : tile tags (`tile_tags`),
    * `nQxint` (4x`nQ`B) : quality tags (`quality tags`),
-   * `5 x ntiles x (long int)` (5x`ntiles`x8B) : (A,C,T,G,N) per tile with low quality  (`lowQ_ACGT_tile`),
-   * `5 x ntiles x (long int)` (5x`ntiles`x8B) :  (A,C,T,G,N) per tile (`ACGT_tile`),
-   * `(read_len+1) x(long int)` ((`read_len`+1)x8B) : number of reads with at least `m` low quality nucleotides    (`reads_MlowQ`),
-   * `ntiles x read_lenx nQ x(long int)` (`ntiles`x`read_len`x`nQ`x8B) :  (`QposTile_table`).
+   * `5 x ntiles x (long int)` (5x`ntiles`x8B) :  # (A,C,G,T,N) per tile with low quality  (`lowQ_ACGT_tile`),
+   * `5 x ntiles x (long int)` (5x`ntiles`x8B) : # (A,C,G,T,N) per tile (`ACGT_tile`),
+   * `(read_len+1) x (long int)` ((`read_len`+1)x8B) : number of reads with at least `m` low quality nucleotides    (`reads_MlowQ`),
+   * `ntiles x read_len x nQ x (long int)` (`ntiles`x`read_len`x`nQ`x8B) : nucleotides  per tile per position with a given quality (`QposTile_table`).
+   * `5 x read_len x (long int)` (5x`read_len`x8B ): # (A,C,G,T,N) per position, (`ACGT_pos`)
 
 - html output:
    * Table with general information ,
@@ -58,13 +59,15 @@ Depends on: `rmarkdown`, `pheatmap` R packages.
    * Average quality per position per tile,
    * Low Q nucleotides proportion per position per tile,
    * Low Q nucleotides proportion per position for all tiles.
+   * Nucleotide content per position
+
 ## Example 
   
    An example is given in the folder `examples`. To run an example, type, 
 
 ``` 
-    bin/lowQuality -i examples/test.fq.bz2 -l 51 -o example/my_output.bin
-    R -e "rmarkdown::render('R/quality_report.Rmd',
+    ./bin/lowQuality -i ./examples/test.fq.bz2 -l 51 -o ./example/my_output.bin
+    R -e "rmarkdown::render('./R/quality_report.Rmd',
                  params=list(inputfile='../examples/my_output.bin'),
                  output_file='../examples/my_test_quality.html')"
 ```

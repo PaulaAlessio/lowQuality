@@ -110,4 +110,17 @@ pheatmap(lowQ_prop,cluster_cols=F, cluster_rows=F,
                      
 ```
 
+## Nucleotide content per position
+
+```{r, echo = F}
+   x <- 1:data$read_len
+   plot(x,data$ACGT_pos[1,]/data$nreads,type="l",lwd=1.5,col="green",
+       xlab="Position in read",ylab="nucleotide content" )
+   lines(x, data$ACGT_pos[2,]/data$nreads,type="l",lwd=1.5,col="blue")
+   lines(x, data$ACGT_pos[3,]/data$nreads,type="l",lwd=1.5,col="black")
+   lines(x, data$ACGT_pos[4,]/data$nreads,type="l",lwd=1.5,col="red")
+   lines(x, data$ACGT_pos[5,]/data$nreads,type="l",lwd=1.5,col="grey")
+   legend('topright', c("A","C","G", "T", "N "), bty= "n",lwd=1.5, 
+          col=c("green","blue","black","red","grey"))
+```
 

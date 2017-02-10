@@ -26,7 +26,6 @@ for (j in 1:data$ntiles){
    cat("  ")   
 }
 
-
 for(i in 1:data$read_len){
    cat(sprintf("\n      %2d:    ",i))
    for (j in 1:data$ntiles){
@@ -38,3 +37,11 @@ for(i in 1:data$read_len){
 
 }
 
+cat("\nACGT_pos:\n")
+cat("    Bases :  A C G T N")
+for (i in 1:data$read_len){
+   cat(sprintf("\n      %2d:    ",i))
+   for( j in (1:5)){
+      cat(data$ACGT_pos[j,i],"")
+   }
+}

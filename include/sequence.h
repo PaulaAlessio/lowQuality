@@ -8,6 +8,6 @@
 
 typedef struct sequence{
    char line1[L_LEN], line2[L_LEN], line3[L_LEN], line4[L_LEN];
-} Read;
+} Sequence;
 
 #endif

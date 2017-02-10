@@ -34,12 +34,13 @@ static int cmpfunc (const void * a, const void * b)
 
 
 void init_info(Info *res, const int read_len, const int ntiles, const int minQ, const int nQ){
-  int d1, d2, d3; 
+  int d1, d2, d3, d4; 
   int i; 
   d1 = N_ACGT*ntiles;
   d2 = read_len + 1;
   d3 = ntiles*read_len*nQ;
-  
+  d4 = N_ACGT*read_len;
+
   // Allocate memory
   res -> tile_tags = (int*) calloc(ntiles , sizeof(int));
   res -> qual_tags = (int*) malloc(nQ * sizeof(int));
@@ -48,6 +49,7 @@ void init_info(Info *res, const int read_len, const int ntiles, const int minQ, 
   res -> ACGT_tile = (long int*) calloc(d1, sizeof(long int));
   res -> reads_MlowQ = (long int*) calloc(d2,  sizeof(long int));
   res -> QPosTile_table = (long int*) calloc(d3,  sizeof(long int));
+  res -> ACGT_pos = (long int*) calloc(d4,  sizeof(long int));
   // Initializations
   res -> nQ = nQ;
   res -> read_len = read_len;
@@ -64,12 +66,13 @@ void free_info(Info* res){
    free(res -> ACGT_tile);      
    free(res -> reads_MlowQ);    
    free(res -> QPosTile_table);
+   free(res -> ACGT_pos);
    free(res); 
 }
 
 void read_info(Info *res, char *file){
    FILE *f; 
-   int d1, d2, d3; 
+   int d1, d2, d3, d4; 
    f = fopen(file, "rb");
    fread(&(res -> read_len),sizeof(int),1,f);
    fread(&(res -> ntiles),sizeof(int),1,f);
@@ -79,6 +82,7 @@ void read_info(Info *res, char *file){
    d1 = N_ACGT*(res -> ntiles);
    d2 = (res -> read_len) + 1;
    d3 = (res -> ntiles)*(res -> read_len)*(res -> nQ);
+   d4 = N_ACGT*(res -> read_len);
    // Allocate memory
    res -> tile_tags = (int*) malloc(res -> ntiles);
    res -> qual_tags = (int*) malloc(res -> nQ);
@@ -92,15 +96,17 @@ void read_info(Info *res, char *file){
    fread(res -> ACGT_tile, sizeof(long int)*d1,1,f);
    fread(res -> reads_MlowQ, sizeof(long int)*d2,1,f);
    fread(res -> QPosTile_table, sizeof(long int)*d3,1,f);
+   fread(res -> ACGT_pos, sizeof(long int)*d4,1,f);
    fclose(f);
 }
 
 void write_info(Info *res, char *file){
    FILE *f; 
-   int d1, d2, d3; 
+   int d1, d2, d3, d4; 
    d1 = N_ACGT*(res -> ntiles);
    d2 = (res -> read_len) + 1;
    d3 = (res -> ntiles)*(res -> read_len)*(res-> nQ);
+   d4 = N_ACGT*(res -> read_len);
    f = fopen(file, "wb");
    fwrite(&(res -> read_len), sizeof(int),1,f);
    fwrite(&(res -> ntiles), sizeof(int),1,f);
@@ -113,6 +119,7 @@ void write_info(Info *res, char *file){
    fwrite(res -> ACGT_tile, sizeof(long int)*d1,1,f);
    fwrite(res -> reads_MlowQ, sizeof(long int)*d2,1,f);
    fwrite(res -> QPosTile_table, sizeof(long int)*d3,1,f);
+   fwrite(res -> ACGT_pos, sizeof(long int)*d4,1,f);
    fclose(f);
 }
 
@@ -162,33 +169,43 @@ void print_info(Info* res){
       printf("\n");
 
    } 
-   
+   printf("\n- Number of nucleotides per position: \n\n");
+   printf("         A       C       G       T       N   \n");
+   for (j =  0; j < res -> read_len; j++){
+      printf("%3d: %7ld %7ld %7ld %7ld %7ld \n", j+1,
+           res -> ACGT_pos[N_ACGT *j ], 
+           res -> ACGT_pos[N_ACGT *j+ 1 ], 
+           res -> ACGT_pos[N_ACGT *j+ 2 ], 
+           res -> ACGT_pos[N_ACGT *j+ 3 ], 
+           res -> ACGT_pos[N_ACGT *j+ 4 ]); 
+   }
 }
 
 
-void get_first_tile(Info* res, Read* read){
-   res->tile_tags[0] = get_tile(read ->line1);
+void get_first_tile(Info* res, Sequence* seq){
+   res->tile_tags[0] = get_tile(seq ->line1);
 
 }
 
 
 
-void update_info(Info* res, Read* read){
+void update_info(Info* res, Sequence* seq){
    int i; 
    long int  lowQ = 0;
    int min_quality = ZEROQ + (res -> minQ);
-   int tile = get_tile(read -> line1);
+   int tile = get_tile(seq -> line1);
    if( res->tile_tags[res -> tile_pos ] != tile){
       res -> tile_tags [++(res -> tile_pos)] = tile;
    }  
    for (i = 0 ; i < res->read_len; i++){
-      update_ACGT_counts(res->ACGT_tile+(res -> tile_pos)*N_ACGT ,read -> line2[i]);
-      if(read -> line4[i] < min_quality){
-         update_ACGT_counts(res->lowQ_ACGT_tile + (res -> tile_pos)*N_ACGT ,read -> line2[i]);
+      update_ACGT_counts(res->ACGT_tile+(res -> tile_pos)*N_ACGT ,seq -> line2[i]);
+      if(seq -> line4[i] < min_quality){
+         update_ACGT_counts(res->lowQ_ACGT_tile + (res -> tile_pos)*N_ACGT ,seq -> line2[i]);
          lowQ++;
       }
    }
-   update_Qtile_table(res -> QPosTile_table, read -> line4, res->read_len ,res -> tile_pos);
+   update_Qtile_table(res -> QPosTile_table, seq -> line4, res->read_len ,res -> tile_pos);
+   update_ACGT_pos(res -> ACGT_pos, seq -> line2, res -> read_len);
    res -> reads_MlowQ[lowQ]++;
    res -> nreads++;
 }
@@ -231,6 +248,12 @@ void update_Qtile_table(long int* Qtile_table, char* line4, const int read_len,
    }
 }
 
+void update_ACGT_pos(long int* ACGT_pos, char* line2, int read_len){
+
+   int i; 
+   for (i = 0; i < read_len; i++ )
+      update_ACGT_counts(ACGT_pos+N_ACGT*i,line2[i]);
+}
 
 
 void resize_info(Info* res){
