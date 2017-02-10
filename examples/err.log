@@ -1,4 +1,4 @@
-Starting program at: Fri Feb 10 10:39:41 2017
+Starting program at: Fri Feb 10 13:02:27 2017
 - Input file: test.fq.bz2
 - Read length: 51
 - Number of tiles: 96
@@ -6,5 +6,5 @@ Starting program at: Fri Feb 10 10:39:41 2017
 - Output file: test_output.bin
 - Finished reading file.
 - Writing data structure to file test_output.bin.
-Finishing program at: Fri Feb 10 10:39:43 2017
-Time elapsed: 0.536840 s.
+Finishing program at: Fri Feb 10 13:02:29 2017
+Time elapsed: 0.537081 s.

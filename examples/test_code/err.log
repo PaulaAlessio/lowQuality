@@ -1,11 +1,11 @@
-Starting program at: Fri Feb 10 12:55:21 2017
-- Input file: test_10seq.fq
-- Read length: 51
-- Number of tiles: 96
-- Min quality: 27
-- Output file: test_10seq.bin
-- Finished reading file.
-- Writing data structure to file test_10seq.bin.
-- Read data structure from file test_10seq.bin.
-Finishing program at: Fri Feb 10 12:55:21 2017
-Time elapsed: 0.001030 s.
+read length was not properly initialized. 
+Usage: lowQuality -i [INPUT_FILE.fq] -l [READ_LENGTH] -t [NUMBER_OF_TILES] -o [OUTPUT_FILE] 
+Reads in a fq file (gz, bz2, z formats also accepted) and performs a set of 
+quality tests. 
+Output in binary format.
+ -h prints help dialog.
+ -i Input file [*fq|*fq.gz|*fq.bz2]. Required option.
+ -l Read length. Length of the reads. Required option.
+ -t Number of tiles. Default 96. 
+ -q Minimum quality allowed. Optional option. Default 27 .
+ -o Output file. required option.

@@ -95,11 +95,11 @@ int main(int argc, char *argv[]){
    
    
    // Read struct from disk (binary)
-   res  = malloc(sizeof *res);
-   fprintf(stderr, "- Read data structure from file %s.\n",outputfile);
-   read_info(res,outputfile);
-   printf("\nPRINTING res from file: \n");
-   print_info(res);
+//   res  = malloc(sizeof *res);
+//   fprintf(stderr, "- Read data structure from file %s.\n",outputfile);
+//   read_info(res,outputfile);
+//   printf("\nPRINTING res from file: \n");
+//   print_info(res);
 //
 
    // Obtaining elapsed time
