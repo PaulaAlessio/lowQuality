@@ -162,12 +162,16 @@ void print_info(Info* res){
       if (res -> reads_MlowQ[i] > max && i >0) max = res -> reads_MlowQ[i];
    } 
    printf("\n- Histogram with M low quality nucleotides in tile 1: \n\n");
-   for (i = 1; i < (res -> read_len +1); i++){
-      printf("MlowQ = %2d| ",i);
-      for ( j = 0 ; j < ( res -> reads_MlowQ[i]*80)/max; j++)
-         printf("*");
-      printf("\n");
-
+   if (max > 0){
+      for (i = 1; i < (res -> read_len +1); i++){
+         printf("MlowQ = %2d| ",i);
+         for ( j = 0 ; j < ( res -> reads_MlowQ[i]*80)/max; j++)
+            printf("*");
+         printf("\n");
+   
+      }
+   } else{
+      printf("   Plotting an histogram not possible (would lead to division by zero).\n");
    } 
    printf("\n- Number of nucleotides per position: \n\n");
    printf("         A       C       G       T       N   \n");

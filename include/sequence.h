@@ -10,4 +10,5 @@ typedef struct sequence{
    char line1[L_LEN], line2[L_LEN], line3[L_LEN], line4[L_LEN];
 } Sequence;
 
+void get_sequence(Sequence* seq, char* buffer,int c1, int c2, int k);
 #endif

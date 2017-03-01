@@ -44,7 +44,11 @@ int main(int argc, char *argv[]){
     
    // Opening file
    f = fopen_gen(inputfile,"r");
-   
+   if(f == NULL) {
+      fprintf(stderr,"File %s not found. Exiting program.\n",inputfile);
+      exit(EXIT_FAILURE);
+   }  
+
    // Initialize struct that will contain the output
    init_info(res, read_len, ntiles, minQ,NQ);
 
