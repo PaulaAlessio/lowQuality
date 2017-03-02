@@ -30,13 +30,13 @@ Output in binary format.
 
 Usage `Rmd` scripts (in folder `R`): 
 
-1. Pro sample, 
+1. Pro sample,
    ```
     Rscript -e "rmarkdown::render('PATH/TO/quality_report.Rmd',
           params=list(inputfile='PATH/TO/test.out'),
           output_file='PATH/TO/HTML_OUTPUT_FILE.html')"
    ```
-2. Summary for all samples
+2. Summary for all samples,
    ```
     Rscript -e "TO BE DONE WHEN I HAVE THE SAMPLES"
    ```
