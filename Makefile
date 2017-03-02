@@ -39,24 +39,22 @@ mkdirs:
 
 $(BINDIR)/$(TARGET): $(OBJECTS)
 	@ echo "Linking..."
-	@$(LINKER) $@  $(LFLAGS)   $(OBJECTS)
-	@echo $(LINKER) $@  $(LFLAGS)   $(OBJECTS)
+	$(LINKER) $@  $(LFLAGS)   $(OBJECTS)
 	@echo "Linking complete!"
 
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.c
 	@echo "Compiling ..."
-	@$(C) $(CFLAGS)  -c $< -o $@
-	@echo $(C) $(CFLAGS)  "-c" $< "-o" $@
+	$(C) $(CFLAGS)  -c $< -o $@
 	@echo "Compiled "$<" successfully!"
 
 
 .PHONY: clean
 clean:
-	@$(RM) $(OBJECTS)
+	$(RM) $(OBJECTS)
 	@echo "Cleanup complete!"
 
 .PHONY: remove
 remove: clean
-	@$(RM) $(BINDIR)/$(TARGET)
+	$(RM) $(BINDIR)/$(TARGET)
 	@echo "Executable removed!"
  

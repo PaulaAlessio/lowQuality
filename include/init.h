@@ -4,12 +4,10 @@
 
 #ifndef init_H
 #define init_H
-#include <getopt.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 void prontHelpDialog();
 void get_arg(int argc,  char **argv, 
       char **inputfile, int *read_len, 
-      int *ntiles, int* minQ, char **outputfile );
+      int *ntiles, int* minQ, char **outputfile, 
+      int *ptrf );
 #endif

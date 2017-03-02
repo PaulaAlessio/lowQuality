@@ -1,4 +1,7 @@
 #include "init.h"
+#include <getopt.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 void printHelpDialog()
 {
@@ -12,7 +15,8 @@ void printHelpDialog()
       " -l Read length. Length of the reads. Required option.\n"
       " -t Number of tiles. Default 96. \n"
       " -q Minimum quality allowed. Optional option. Default 27 .\n"
-      " -o Output file. required option.\n";
+      " -o Output file. required option.\n"
+      " -f If present, the file will be treated as a filtered file (output from filter_trim).\n";
    fprintf(stderr, "%s", dialog );
    exit(EXIT_SUCCESS);
 }
@@ -20,13 +24,15 @@ void printHelpDialog()
 
 void get_arg(int argc,  char **argv, 
       char **inputfile, int *read_len, 
-      int *ntiles, int* minQ, char **outputfile ){
+      int *ntiles, int* minQ, char **outputfile, 
+      int *ptrf ){
    
    char tmp;
-   if (argc != 11 && argc != 9 && argc != 7  && argc != 3) {
+   if (argc != 11 && argc != 9 && argc != 7  && argc != 3 && 
+       argc != 12 && argc != 10 && argc != 8  && argc != 4){  
       printHelpDialog();
    }
-   while ( (tmp = getopt(argc,argv,"hi:l:t:q:o:")) != -1){
+   while ( (tmp = getopt(argc,argv,"hi:l:t:q:o:f")) != -1){
       switch(tmp){
          case 'h': //show the HelpDialog
            printHelpDialog();
@@ -43,6 +49,9 @@ void get_arg(int argc,  char **argv,
          case 'q':
            *minQ = atoi(optarg);
            break;
+         case 'f': 
+           *ptrf = 1;  
+           break; 
          case 'o':
            *outputfile = optarg;
            break; 

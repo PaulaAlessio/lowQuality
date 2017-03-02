@@ -13,6 +13,7 @@ params:
 ## General information
 
 ```{r, echo = F}
+#source("../R/utils.R")
 source("utils.R")
 library(pheatmap)
 data <- getQualStats(params$inputfile)
@@ -37,6 +38,8 @@ Number of reads  | `r data$nreads`
 Number of highQ reads  | `r data$reads_MlowQ[1]`   
 Number of tiles  | `r data$ntiles`
 Qualities        | `r qualities`
+Reads with N's   | `r data$reads_wN`
+Number of N's    | `r sum(data$ACGT_pos[5,])`
 
 ## # reads with at least  `m` low Q nucleotides
 
@@ -49,8 +52,12 @@ barplot(data$reads_MlowQ[2:length(data$reads_MlowQ)], xlab="m" , names=1:data$re
 
 
 ```{r, fig.width=4, fig.height=data$ntiles/6, echo = F}
-pheatmap((data$lowQ_ACGT_tile/data$ACGT_tile)[,1:4],cluster_cols=F, cluster_rows=F, 
+if(all(data$lowQ_ACGT_tile == 0)){
+   cat( "\t\t NO LOW QUALITY NUCLEOTIDES FOUND. NOT PLOTTING HEATMAP\n")
+}else{
+   pheatmap((data$lowQ_ACGT_tile/data$ACGT_tile)[,1:4],cluster_cols=F, cluster_rows=F, 
          fontsize_row=6, fontsize_col=6,  color = color)
+} 
 ```
 
 ## Average quality per position per tile
@@ -79,10 +86,15 @@ for(i in 1:data$ntiles){
       tiles_lowQ[i,j] <- sum(data$QPosTile_table[j,lowQ_idx,i])/sum(data$QPosTile_table[j,,i])
    }
 }
-pheatmap(tiles_lowQ,cluster_cols=F, cluster_rows=F, 
+if (all(tiles_lowQ==0)){
+   cat( "\t\t NO LOW QUALITY NUCLEOTIDES FOUND. NOT PLOTTING HEATMAP\n")
+}else { 
+   pheatmap(tiles_lowQ,cluster_cols=F, cluster_rows=F, 
          fontsize_row=6, fontsize_col=6,color=color)
 
+} 
 ```
+
 
 ## Low Q nucleotides proportion per position for all tiles
 ```{r, echo = F, fig.height=2.5 }
@@ -101,25 +113,32 @@ for (lowQ in c(27,33,37)){
    i = i + 1
 }
 
-sec_max <- unique(lowQ_prop[3,])[order(unique(lowQ_prop[3,]))[2]]
-breaks <- seq(0,sec_max+0.1,length=length(color))
-breaks <- c(breaks,1)
-pheatmap(lowQ_prop,cluster_cols=F, cluster_rows=F,  
+if(all(lowQ==0)){
+   cat( "\t\t NO LOW QUALITY NUCLEOTIDES FOUND. NOT PLOTTING HEATMAP\n")
+
+} else {
+   sec_max <- unique(lowQ_prop[3,])[order(unique(lowQ_prop[3,]))[2]]
+   breaks <- seq(0,sec_max+0.1,length=length(color))
+   breaks <- c(breaks,1)
+   pheatmap(lowQ_prop,cluster_cols=F, cluster_rows=F,  
          fontsize_row=6, fontsize_col=6,color=color,breaks = breaks, 
          cellheight=30)
                      
+}
+
 ```
 
 ## Nucleotide content per position
 
 ```{r, echo = F}
    x <- 1:data$read_len
-   plot(x,data$ACGT_pos[1,]/data$nreads,type="l",lwd=1.5,col="green",
+   nreads_pos <- colSums(data$ACGT_pos)
+   plot(x,data$ACGT_pos[1,]/nreads_pos,type="l",lwd=1.5,col="green",
        xlab="Position in read",ylab="nucleotide content" )
-   lines(x, data$ACGT_pos[2,]/data$nreads,type="l",lwd=1.5,col="blue")
-   lines(x, data$ACGT_pos[3,]/data$nreads,type="l",lwd=1.5,col="black")
-   lines(x, data$ACGT_pos[4,]/data$nreads,type="l",lwd=1.5,col="red")
-   lines(x, data$ACGT_pos[5,]/data$nreads,type="l",lwd=1.5,col="grey")
+   lines(x, data$ACGT_pos[2,]/nreads_pos,type="l",lwd=1.5,col="blue")
+   lines(x, data$ACGT_pos[3,]/nreads_pos,type="l",lwd=1.5,col="black")
+   lines(x, data$ACGT_pos[4,]/nreads_pos,type="l",lwd=1.5,col="red")
+   lines(x, data$ACGT_pos[5,]/nreads_pos,type="l",lwd=1.5,col="grey")
    legend('topright', c("A","C","G", "T", "N "), bty= "n",lwd=1.5, 
           col=c("green","blue","black","red","grey"))
 ```

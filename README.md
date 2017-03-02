@@ -15,26 +15,35 @@ html visualization of the data.
 Usage `C` executable (in folder `bin`): 
 
 ```
-lowQuality -i [INPUT_FILE.fq] -l [READ_LENGTH] -t [NUMBER_OF_TILES] -o [OUTPUT_FILE]` 
+Usage: lowQuality -i [INPUT_FILE.fq] -l [READ_LENGTH] -t [NUMBER_OF_TILES] -o [OUTPUT_FILE] 
 Reads in a fq file (gz, bz2, z formats also accepted) and performs a set of 
 quality tests. 
-Output is in binary format, (write the reader!).
-*  `-h` prints help dialog.
-*  `-i` Input file `[*fq|*fq.gz|*fq.bz2]`. Required option.
-*  `-l` Read length. Length of the reads. Required option.
-*  `-t` Number of tiles. Required option. 
-*  `-q` Minimum quality allowed. Optional option. Default = 27 .
-*  `-o` Output file. required option.
+Output in binary format.
+ -h prints help dialog.
+ -i Input file [*fq|*fq.gz|*fq.bz2]. Required option.
+ -l Read length. Length of the reads. Required option.
+ -t Number of tiles. Default 96. 
+ -q Minimum quality allowed. Optional option. Default 27 .
+ -o Output file. required option.
+ -f If present, the file will be treated as a filtered file (output from filter_trim).
 ```
 
-Usage `Rmd` script (in folder `R`): 
+Usage `Rmd` scripts (in folder `R`): 
 
+1. Pro sample,  
 ```
-    R -e "rmarkdown::render('quality_report.Rmd',
-          params=list(inputfile='test.out'),
-          output_file='HTML_OUTPUT_FILE.html')"
+    Rscript -e "rmarkdown::render('PATH/TO/quality_report.Rmd',
+          params=list(inputfile='PATH/TO/test.out'),
+          output_file='PATH/TO/HTML_OUTPUT_FILE.html')"
 ```
+2. Summary for all samples
+```
+  Rscript -e "TO BE DONE WHEN I HAVE THE SAMPLES"
+```
+
 Depends on: `rmarkdown`, `pheatmap` R packages.
+
+Can be used with filtered `fastq` files from `trim_filtered`
 
 ## Output description
 
@@ -44,6 +53,7 @@ Depends on: `rmarkdown`, `pheatmap` R packages.
    * `int` (4B) : minimum quality accepted (`minQ`),   
    * `int` (4B) : number of possible qualities (`nQ`), 
    * `int` (4B) : number of reads (`nreads`),
+   * `int` (4B) : number of reads containing N's (`reads_wN`),
    * `ntiles*int ` (4x`ntiles`B) : tile tags (`tile_tags`),
    * `nQxint` (4x`nQ`B) : quality tags (`quality tags`),
    * `5 x ntiles x (long int)` (5x`ntiles`x8B) :  # (A,C,G,T,N) per tile with low quality  (`lowQ_ACGT_tile`),
@@ -67,16 +77,14 @@ Depends on: `rmarkdown`, `pheatmap` R packages.
 
 ``` 
     ./bin/lowQuality -i ./examples/test.fq.bz2 -l 51 -o ./example/my_output.bin
-    R -e "rmarkdown::render('./R/quality_report.Rmd',
-                 params=list(inputfile='../examples/my_output.bin'),
-                 output_file='../examples/my_test_quality.html')"
+    Rscript -e "rmarkdown::render('./R/quality_report.Rmd',
+                 params=list(inputfile='./examples/my_output.bin'),
+                 output_file='./examples/my_test_quality.html')"
 ```
-
-  
 
 ## Contributors
 
-Paula Perez Rubio 
+Paula Pérez Rubio 
 
 ## License
 

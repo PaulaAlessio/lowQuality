@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 #include "init.h"
 #include "fopen_gen.h"
@@ -11,21 +12,23 @@
 #define MINQ 27   // default value
 
 int main(int argc, char *argv[]){
-   FILE* f;
+   FILE *f;
    int j = 0, k = 0, c1 = 0, c2 = -1;  
    char buffer[B_LEN + 1];
    int newlen;
    int offset = 0; 
    Info* res= malloc(sizeof *res); 
    Sequence* seq = malloc(sizeof *seq);
-   char  *inputfile = NULL, *outputfile=NULL;
+   char  *inputfile = NULL, *outputfile=NULL, infofile[300];
    int read_len = 0; 
    int ntiles = NTILES; 
    int minQ = MINQ ; 
+   int ptrf = 0; 
    clock_t start, end;
    double cpu_time_used;
    time_t rawtime;
    struct tm * timeinfo;
+   void (*ptr_get_sequence)( Sequence*, char*, int, int, int);
 
    // Start the clock 
    start = clock();
@@ -34,14 +37,19 @@ int main(int argc, char *argv[]){
   
    // Get arguments  
    get_arg(argc, argv, &inputfile, &read_len, 
-           &ntiles, &minQ, &outputfile);
+           &ntiles, &minQ, &outputfile, &ptrf);
+   strcpy(infofile,outputfile); 
+   //infofile = "bbb";
+   strcat(infofile,".info");   
    fprintf(stderr ,"Starting program at: %s", asctime (timeinfo) );
    fprintf(stderr, "- Input file: %s\n", inputfile);
    fprintf(stderr, "- Read length: %d\n", read_len);
    fprintf(stderr, "- Number of tiles: %d\n", ntiles);
    fprintf(stderr, "- Min quality: %d\n", minQ);
    fprintf(stderr, "- Output file: %s\n", outputfile);
-    
+   fprintf(stderr, "- Output info file: %s\n", infofile);
+   fprintf(stderr, "- Reading a filtered file? %s.\n",(ptrf)?"yes":"no");
+   ptr_get_sequence = (!ptrf) ? &get_sequence: &get_sequence_filt;
    // Opening file
    f = fopen_gen(inputfile,"r");
    if(f == NULL) {
@@ -62,9 +70,10 @@ int main(int argc, char *argv[]){
          c1 = c2 + 1;
          if (buffer[j]== '\n'){
            c2 = j;
-           get_sequence(seq,buffer,c1,c2, k);
+           (*ptr_get_sequence)(seq,buffer,c1,c2, k);
            if( (k % 4) == 3 ){
               
+//              printf("Nreads: %d \n",res -> nreads);
               if (res -> nreads == 0) get_first_tile(res,seq);
               update_info(res,seq);
               if (res -> nreads % 1000000 == 0) 
@@ -92,7 +101,7 @@ int main(int argc, char *argv[]){
    write_info(res,outputfile);
 
    // Print to the standard output
-   print_info(res);
+   print_info(res, infofile);
 
    // Free memory
    free_info(res);

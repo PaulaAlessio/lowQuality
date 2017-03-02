@@ -1,0 +1,13 @@
+# Run the example again and compare it with 
+# the available results running the following commands
+
+# 1. Run the C executable 
+../bin/lowQuality -i test.fq.bz2  -l 51 -o my_test_output.bin 
+
+# 2. Run the R script to produce the html report 
+Rscript -e "rmarkdown::render('../R/quality_report.Rmd', params=list(inputfile='../examples/my_test_output.bin'),output_file='../examples/my_test_quality.html')" 
+
+#3. Compare the files: 
+  - test_output.bin      <-> my_test_output.bin
+  - test_output.bin.info <-> my_test_output.bin.info
+  - test_quality.html    <-> my_test_quality.html

@@ -8,6 +8,7 @@ getQualStats <- function(path){
    res$minQ <- readBin(to.read, integer(), endian = "little")
    res$nQ <- readBin(to.read, integer(), endian = "little")
    res$nreads <- readBin(to.read, integer(), endian = "little")
+   res$reads_wN <- readBin(to.read, integer(), endian = "little")
    
    res$base_tags <- c("A","C","G","T","N")
    d1 = N_ACGT*(res$ntiles);
