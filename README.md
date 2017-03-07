@@ -76,7 +76,9 @@ Can be used with filtered `fastq` files from `trim_filtered`
    * Low Q nucleotides proportion per position for all tiles.
    * Nucleotide content per position
 
-- html summary
+- html summary: 
+   * Table with: `# reads , # tiles, % lowQ reads, % reads with N’s` for all samples.
+   * Heatmap showing the average quality per position for all samples.
 
 ## Example 
   

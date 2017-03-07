@@ -37,7 +37,7 @@ for (f in files){
   table[i,] <- c(data$nreads,data$ntiles,(data$nreads - data$reads_MlowQ[1])/data$nreads*100, 
                  data$reads_wN/data$nreads*100)
   for(j in 1:data$read_len){
-     meanQ[i,j] <- weighted.mean(data$qual_tags,colSums(data$QPosTile_table[,,i]))
+     meanQ[i,j] <- weighted.mean(data$qual_tags,rowSums(data$QPosTile_table[j,,]))
   }
   i = i + 1
 }
@@ -49,6 +49,7 @@ kable(table)
 ## Mean quality
 
 ```{r, fig.width=8, fig.height=Ns/7, echo = F}
+
 pheatmap(meanQ,cluster_cols=F, cluster_rows=F, 
          fontsize_row=8, fontsize_col=6,color=color2)
 
