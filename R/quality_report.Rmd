@@ -32,6 +32,7 @@ qualities <- substr(qualities,1,nchar(qualities)-2)
                     
  Var  | value
 ----- |------------------------------------
+Input file name  | `r sub('.*\\/', '', params$inputfile)`
 Read length      | `r data$read_len `
 Min good quality | `r data$minQ`
 Number of reads  | `r data$nreads`   
@@ -80,14 +81,19 @@ pheatmap(tiles_meanQ,cluster_cols=F, cluster_rows=F,
 ```{r,fig.width=7, fig.height=data$ntiles/6, echo = F}
 tiles_lowQ <- array(dim=c(data$ntiles,data$read_len), 
                      dimnames = list(data$tile_tags, 1:data$read_len))
-lowQ_idx <- which(data$qual_tags< data$minQ)
+lowQ_idx <- which(data$qual_tags < data$minQ)
 for(i in 1:data$ntiles){
    for(j in 1:data$read_len){
       tiles_lowQ[i,j] <- sum(data$QPosTile_table[j,lowQ_idx,i])/sum(data$QPosTile_table[j,,i])
    }
 }
+if(sum(is.nan(tiles_lowQ)) >0) {
+
+   cat("\t\t THERE WERE TILES WITH MISSING POSITIONS. REMOVING THESE.\n")
+   tiles_lowQ <- tiles_lowQ[rowSums(is.nan(tiles_lowQ)) == 0,]
+}
 if (all(tiles_lowQ==0)){
-   cat( "\t\t NO LOW QUALITY NUCLEOTIDES FOUND. NOT PLOTTING HEATMAP\n")
+   cat( "\t\t NO LOW QUALITY NUCLEOTIDES FOUND. NOT PLOTTING HEATMAP.\n")
 }else { 
    pheatmap(tiles_lowQ,cluster_cols=F, cluster_rows=F, 
          fontsize_row=6, fontsize_col=6,color=color)
@@ -114,7 +120,7 @@ for (lowQ in c(27,33,37)){
 }
 
 if(all(lowQ==0)){
-   cat( "\t\t NO LOW QUALITY NUCLEOTIDES FOUND. NOT PLOTTING HEATMAP\n")
+   cat( "\t\t NO LOW QUALITY NUCLEOTIDES FOUND. NOT PLOTTING HEATMAP.\n")
 
 } else {
    sec_max <- unique(lowQ_prop[3,])[order(unique(lowQ_prop[3,]))[2]]

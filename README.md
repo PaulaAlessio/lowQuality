@@ -24,7 +24,7 @@ Output in binary format.
  -l Read length. Length of the reads. Required option.
  -t Number of tiles. Default 96. 
  -q Minimum quality allowed. Optional option. Default 27 .
- -o Output file. required option.
+ -o Output file. required option. With  *bin extension.
  -f If present, the file will be treated as a filtered file (output from filter_trim).
 ```
 
@@ -39,8 +39,12 @@ Usage `Rmd` scripts (in folder `R`):
 
 2. Summary for all samples,
     ```
-     Rscript -e "TO DO"
+     Rscript -e "rmarkdown::render('PATH/TO/summary_report.Rmd', 
+                 params=list(inputfolder='PATH/TO/BINARY/FILES'), 
+                 output_file='PATH/TO/HTML_OUTPUT_FILE.html')"
     ```
+**Warning:**  `summary_report.Rmd` requires the `C` executable output 
+to have the extension `.bin`
 
 Depends on: `rmarkdown`, `pheatmap` R packages.
 
@@ -71,6 +75,8 @@ Can be used with filtered `fastq` files from `trim_filtered`
    * Low Q nucleotides proportion per position per tile,
    * Low Q nucleotides proportion per position for all tiles.
    * Nucleotide content per position
+
+- html summary
 
 ## Example 
   
