@@ -19,7 +19,7 @@ library(pheatmap)
 data <- getQualStats(params$inputfile)
 color <- colorRampPalette(c("white", "red"))( 50 )
 color2 <- colorRampPalette(c("white", "blue"))( 50 )
-a <- c(2,14,22,27,33,37)
+#a <- c(2,14,22,27,33,37)
 qualities <- ""
 for (i in data$qual_tags){
    qualities <- paste0(qualities, sprintf("%d (%s), ",i, intToUtf8(i+33) ))
@@ -41,6 +41,21 @@ Number of tiles  | `r data$ntiles`
 Qualities        | `r qualities`
 Reads with N's   | `r data$reads_wN`
 Number of N's    | `r sum(data$ACGT_pos[5,])`
+
+
+
+
+
+## Per base sequence quality
+
+
+```{r, echo = F}
+  QualAbund <- getQualAbundancies(data)
+  sampleQ <- mimic(QualAbund)
+  my_plot(sampleQ) 
+
+```
+
 
 ## # reads with at least  `m` low Q nucleotides
 

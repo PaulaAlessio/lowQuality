@@ -69,12 +69,13 @@ Can be used with filtered `fastq` files from `trim_filtered`
 
 - html output:
    * Table with general information ,
-   * Plot 1: # reads with at least m low Q nucleotides,
-   * Low Q nucleotide proportion,
-   * Average quality per position per tile,
-   * Low Q nucleotides proportion per position per tile,
-   * Low Q nucleotides proportion per position for all tiles.
-   * Nucleotide content per position
+   * Plot 1: per base sequence quality, 
+   * Plot 2: # reads with at least m low Q nucleotides,
+   * Plot 3: Low Q nucleotide proportion,
+   * Plot 4: Average quality per position per tile,
+   * Plot 5: Low Q nucleotides proportion per position per tile,
+   * Plot 6: Low Q nucleotides proportion per position for all tiles.
+   * Plot 7: Nucleotide content per position
 
 - html summary: 
    * Table with: `# reads , # tiles, % lowQ reads, % reads with N’s` for all samples.

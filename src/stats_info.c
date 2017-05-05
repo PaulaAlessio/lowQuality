@@ -201,7 +201,7 @@ void update_info(Info* res, Sequence* seq){
    long int  lowQ = 0;
    int min_quality = ZEROQ + (res -> minQ);
    int tile = get_tile(seq -> line1);
-   int Ns = 0;   
+   int Ns = 0;  
    if( res->tile_tags[res -> tile_pos ] != tile){
       res -> tile_tags [++(res -> tile_pos)] = tile;
    }  
@@ -212,6 +212,8 @@ void update_info(Info* res, Sequence* seq){
          lowQ++;
       }
    }
+//   if(res->tile_pos>=96)
+//      fprintf(stderr, "tiles mayor!\n");
    if ( Ns > 0 ) res -> reads_wN++;
    update_Qtile_table(res -> QPosTile_table, seq , res->read_len ,res -> tile_pos);
    update_ACGT_pos(res -> ACGT_pos, seq , res -> read_len);
@@ -258,6 +260,9 @@ void update_Qtile_table(long int* Qtile_table, Sequence *seq, const int read_len
    int i = 0; 
    // Mucha atencion con los 'indices 
    while (seq -> line4[i] != '\0'){
+      //fprintf(stderr,"%d ",tile_cc*read_len*NQ + ((int)seq -> line4[i] - ZEROQ)*read_len + pos);
+      if (((int)seq -> line4[i] - ZEROQ) >= 41)
+         fprintf(stderr,"%d ",((int)seq -> line4[i] - ZEROQ));
       Qtile_table[tile_cc*read_len*NQ + ((int)seq -> line4[i] - ZEROQ)*read_len + pos]++; 
       i++;
       pos++;
