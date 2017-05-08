@@ -6,7 +6,7 @@ html visualization of the data.
 
 ## Installation
 
- - Requires: gcc, R, Rpackages::pheatmap.
+ - Requires: gcc, R, Rpackages::pheatmap,rmarkdown.
  - Clone the repository.
  - Run make.
  
