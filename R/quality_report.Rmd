@@ -86,8 +86,20 @@ for(i in 1:data$ntiles){
       tiles_meanQ[i,j] <- weighted.mean(data$qual_tags,data$QPosTile_table[j,,i])
    }
 }
-pheatmap(tiles_meanQ,cluster_cols=F, cluster_rows=F, 
+if (any(is.nan(tiles_meanQ))){
+   cat("\t\t THERE WERE TILES WITH MISSING POSITIONS. PLOTTING THEM BLACK.\n")
+   color2[length(color2)] <- "#000000"
+   from <- min(tiles_meanQ, na.rm=T); to <- max(tiles_meanQ, na.rm=T)
+   breaks <- c(seq(from=from,  to=to, by = (to - from)/(length(color2) -1 )), to+0.01)
+   tiles_meanQ[which(is.nan(tiles_meanQ))] = to+0.01 
+   pheatmap(tiles_meanQ,cluster_cols=F, cluster_rows=F, 
+            fontsize_row=6, fontsize_col=6,color=color2, 
+            breaks=breaks)
+}else{
+   pheatmap(tiles_meanQ,cluster_cols=F, cluster_rows=F, 
          fontsize_row=6, fontsize_col=6,color=color2)
+
+}
 
 ```
 

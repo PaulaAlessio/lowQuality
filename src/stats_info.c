@@ -261,8 +261,8 @@ void update_Qtile_table(long int* Qtile_table, Sequence *seq, const int read_len
    // Mucha atencion con los 'indices 
    while (seq -> line4[i] != '\0'){
       //fprintf(stderr,"%d ",tile_cc*read_len*NQ + ((int)seq -> line4[i] - ZEROQ)*read_len + pos);
-      if (((int)seq -> line4[i] - ZEROQ) >= 41)
-         fprintf(stderr,"%d ",((int)seq -> line4[i] - ZEROQ));
+      if (((int)seq -> line4[i] - ZEROQ) > 41)
+          fprintf(stderr," Quality is too large, %d . Are your data Phred+33? Redefine ZEROQ otherwise. \n",((int)seq -> line4[i] - ZEROQ));
       Qtile_table[tile_cc*read_len*NQ + ((int)seq -> line4[i] - ZEROQ)*read_len + pos]++; 
       i++;
       pos++;
