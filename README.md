@@ -6,6 +6,7 @@ html visualization of the data.
 
 ## Installation
 
+ - Requires: gcc, R, Rpackages::pheatmap,rmarkdown.
  - Clone the repository.
  - Run make.
  
@@ -15,16 +16,16 @@ html visualization of the data.
 Usage `C` executable (in folder `bin`): 
 
 ```
-Usage: lowQuality -i [INPUT_FILE.fq] -l [READ_LENGTH] -t [NUMBER_OF_TILES] -o [OUTPUT_FILE] 
+Usage: lowQuality -i <INPUT_FILE.fq> -l <READ_LENGTH> -q [Q_THRESHOLD] -t [NUMBER_OF_TILES] -o <OUTPUT_FILE> 
 Reads in a fq file (gz, bz2, z formats also accepted) and performs a set of 
 quality tests. 
 Output in binary format.
  -h prints help dialog.
- -i Input file [*fq|*fq.gz|*fq.bz2]. Required option.
- -l Read length. Length of the reads. Required option.
- -t Number of tiles. Default 96. 
- -q Minimum quality allowed. Optional option. Default 27 .
- -o Output file. required option. With  *bin extension.
+ -i Input file [*fq|*fq.gz|*fq.bz2]. Required parameter.
+ -l Read length. Length of the reads. Required parameter.
+ -t Number of tiles. Optional parameter (default 96). 
+ -q Minimum quality allowed. Optional parameter (default 27).
+ -o Output file. Required parameter. With  *bin extension.
  -f If present, the file will be treated as a filtered file (output from filter_trim).
 ```
 
