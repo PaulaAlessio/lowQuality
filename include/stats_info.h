@@ -8,7 +8,7 @@
 #include <string.h>
 #include "sequence.h"
 #define ZEROQ 33
-#define NQ 41
+#define NQ 45
 #define N_ACGT 5
 
 
